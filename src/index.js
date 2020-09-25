@@ -1,0 +1,11 @@
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import PhonebookApp from "./PhonebookApp/PhonebookApp";
+
+ReactDOM.render(
+  <React.StrictMode>
+    <PhonebookApp />
+  </React.StrictMode>,
+  document.getElementById("root")
+);

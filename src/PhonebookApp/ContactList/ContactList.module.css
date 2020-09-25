@@ -1,0 +1,10 @@
+.itemContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deleteBtn:active {
+  background-color: #807eff;
+  color: #fff;
+}
