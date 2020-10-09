@@ -1,8 +1,13 @@
 import React from "react";
-import ContactForm from "./ContactForm/ContactForm";
-import ContactList from "./ContactList/ContactList";
-import Filter from "./Filter/Filter";
+
+import LocalStorage from "../utils/localStorageAPI";
 import styles from "./PhonebookApp.module.css";
+
+import ContactForm from "./components/ContactForm";
+import ContactList from "./components/ContactList";
+import Filter from "./components/Filter";
+
+const CONTACTS = "contacts";
 
 export default class PhonebookApp extends React.Component {
   static defaultProps = {};
@@ -15,18 +20,16 @@ export default class PhonebookApp extends React.Component {
 
   componentDidMount() {
     this.setState({
-      contacts: localStorage.getItem("contacts")
-        ? JSON.parse(localStorage.getItem("contacts"))
-        : [],
+      contacts: LocalStorage.get(CONTACTS),
     });
   }
 
   componentDidUpdate() {
-    const savedContacts = localStorage.getItem("contacts");
-    const currentContacts = JSON.stringify(this.state.contacts);
+    const oldContacts = JSON.stringify(LocalStorage.get(CONTACTS));
+    const newContacts = JSON.stringify(this.state.contacts);
 
-    if (savedContacts !== currentContacts) {
-      localStorage.setItem("contacts", currentContacts);
+    if (oldContacts !== newContacts) {
+      LocalStorage.set(CONTACTS, newContacts);
     }
   }
 
@@ -52,10 +55,10 @@ export default class PhonebookApp extends React.Component {
   };
 
   makeFilterList = () => {
-    const totalList = this.state.contacts;
+    const allContacts = this.state.contacts;
     const filter = this.state.filter;
 
-    return totalList.filter((item) =>
+    return allContacts.filter((item) =>
       item.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
@@ -73,15 +76,15 @@ export default class PhonebookApp extends React.Component {
         <h1 className={styles.title}>Phonebook</h1>
         <ContactForm onSubmit={this.addContact} />
 
-        <h2 className={styles.title}>Contacts</h2>
         {contacts.length > 1 && (
           <Filter onFilter={this.handleChange} value={filter} />
         )}
-
-        <ContactList
-          list={this.makeFilterList()}
-          removeItem={this.handleRemoveListItem}
-        />
+        {contacts.length > 0 && (
+          <ContactList
+            list={this.makeFilterList()}
+            removeItem={this.handleRemoveListItem}
+          />
+        )}
       </div>
     );
   }
